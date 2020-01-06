@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,15 +13,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class TrackPoint {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@JsonIgnore
 	private long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="track_segment_id", nullable=false)
+	@JsonIgnore
     private TrackSegment trackSegment;
 	
 	@Column
@@ -34,6 +40,7 @@ public class TrackPoint {
 	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
 	private Date time;
 
 	public long getId() {

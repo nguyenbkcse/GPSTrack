@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -15,6 +14,9 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class GPS {
 	
@@ -22,6 +24,7 @@ public class GPS {
     @GeneratedValue(generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "gps_id")
+	@JsonIgnore
 	private String id;
 	
 	@Column(name = "gps_name")
@@ -35,12 +38,13 @@ public class GPS {
 	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
 	private Date time;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "gps")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps")
 	private List<WayPoint> waypoints;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "gps")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps")
 	private List<TrackSegment> trackSegments;
 
 	public String getId() {

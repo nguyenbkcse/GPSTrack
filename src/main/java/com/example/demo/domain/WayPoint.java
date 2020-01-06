@@ -9,19 +9,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class WayPoint {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@JsonIgnore
 	private long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="gps_id", nullable=false)
+	@JsonIgnore
     private GPS gps;
-	
-	@Column(name="gps_id", insertable = false, updatable = false)
-	private String gpsId;
 	
 	@Column
 	private double lat;
@@ -49,14 +50,6 @@ public class WayPoint {
 
 	public void setGps(GPS gps) {
 		this.gps = gps;
-	}
-
-	public String getGpsId() {
-		return gpsId;
-	}
-
-	public void setGpsId(String gpsId) {
-		this.gpsId = gpsId;
 	}
 
 	public double getLat() {
