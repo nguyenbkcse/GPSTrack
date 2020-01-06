@@ -43,7 +43,6 @@ public class GPSController {
 		if (insertedGPS == null) {
 			return new ResponseEntity<>(new UploadTrackResponse(null, "Cannot upload file into system"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		gpsService.findById(insertedGPS.getId());
 		return new ResponseEntity<>(new UploadTrackResponse(insertedGPS.getId(), null), HttpStatus.OK);
 	}
 	

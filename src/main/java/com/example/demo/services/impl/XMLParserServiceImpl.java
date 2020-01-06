@@ -1,9 +1,9 @@
 package com.example.demo.services.impl;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -70,7 +70,7 @@ public class XMLParserServiceImpl implements XMLParserService {
 	
 	private void getInfoFromWayPoints(Document doc, GPS gps) {
 		NodeList nodeList = doc.getElementsByTagName(WAYPOINT_TAG);
-		List<WayPoint> waypoints = new ArrayList<>();
+		Set<WayPoint> waypoints = new LinkedHashSet<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element)nodeList.item(i);
 			WayPoint waypoint = new WayPoint();
@@ -87,13 +87,13 @@ public class XMLParserServiceImpl implements XMLParserService {
 	private void getInfoFromTrackPoints(Document doc, GPS gps) {
 		Element trackNode = (Element)doc.getElementsByTagName(TRACK_TAG).item(0);
 		NodeList trackSegmentNodes = trackNode.getElementsByTagName(TRACK_SEGMENT_TAG);
-		List<TrackSegment> trackSegments = new ArrayList<>();
+		Set<TrackSegment> trackSegments = new LinkedHashSet<>();
 		for (int i = 0; i < trackSegmentNodes.getLength(); i++) {
 			Element trackSegmentNode = (Element) trackSegmentNodes.item(i);
 			TrackSegment trackSegment = new TrackSegment();
 			trackSegment.setGps(gps);
 			NodeList trackPointNodes = trackSegmentNode.getElementsByTagName(TRACK_POINT_TAG);
-			List<TrackPoint> trackPoints = new ArrayList<>();
+			Set<TrackPoint> trackPoints = new LinkedHashSet<>();
 			for (int j = 0; j < trackPointNodes.getLength(); j++) {
 				Element trackPointNode = (Element)trackPointNodes.item(j);
 				TrackPoint trackPoint = new TrackPoint();

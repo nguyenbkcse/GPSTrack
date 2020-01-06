@@ -1,14 +1,16 @@
 package com.example.demo.domain;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -41,11 +43,13 @@ public class GPS {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
 	private Date time;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps")
-	private List<WayPoint> waypoints;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps", fetch = FetchType.EAGER)
+	@OrderBy("id")
+	private Set<WayPoint> waypoints;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps")
-	private List<TrackSegment> trackSegments;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps", fetch = FetchType.EAGER)
+	@OrderBy("id")
+	private Set<TrackSegment> trackSegments;
 
 	public String getId() {
 		return id;
@@ -87,19 +91,19 @@ public class GPS {
 		this.time = time;
 	}
 
-	public List<WayPoint> getWaypoints() {
+	public Set<WayPoint> getWaypoints() {
 		return waypoints;
 	}
 
-	public void setWaypoints(List<WayPoint> waypoints) {
+	public void setWaypoints(Set<WayPoint> waypoints) {
 		this.waypoints = waypoints;
 	}
 
-	public List<TrackSegment> getTrackSegments() {
+	public Set<TrackSegment> getTrackSegments() {
 		return trackSegments;
 	}
 
-	public void setTrackSegments(List<TrackSegment> trackSegments) {
+	public void setTrackSegments(Set<TrackSegment> trackSegments) {
 		this.trackSegments = trackSegments;
 	}
 	

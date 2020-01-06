@@ -1,6 +1,6 @@
 package com.example.demo.domain;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,8 +28,9 @@ public class TrackSegment {
 	@JsonIgnore
     private GPS gps;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "trackSegment")
-	private List<TrackPoint> trackPoints;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "trackSegment", fetch = FetchType.EAGER)
+	@OrderBy("id")
+	private Set<TrackPoint> trackPoints;
 
 	public long getId() {
 		return id;
@@ -46,11 +48,11 @@ public class TrackSegment {
 		this.gps = gps;
 	}
 
-	public List<TrackPoint> getTrackPoints() {
+	public Set<TrackPoint> getTrackPoints() {
 		return trackPoints;
 	}
 
-	public void setTrackPoints(List<TrackPoint> trackPoints) {
+	public void setTrackPoints(Set<TrackPoint> trackPoints) {
 		this.trackPoints = trackPoints;
 	}
 	
