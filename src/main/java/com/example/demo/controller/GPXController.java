@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.domain.GPX;
 import com.example.demo.response.GPXOverviewResponse;
 import com.example.demo.response.LatestTracksResponse;
+import com.example.demo.response.TrackCountResponse;
 import com.example.demo.response.TrackDetailResponse;
 import com.example.demo.response.UploadTrackResponse;
 import com.example.demo.services.GPXService;
@@ -33,10 +36,15 @@ public class GPXController {
 	@Autowired
 	XMLParserService xmlParserService;
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GPXController.class);
+	
 	@PostMapping("/upload")
 	public ResponseEntity<UploadTrackResponse> uploadGPXFile(@RequestParam MultipartFile gpxFile) {
-		GPX gpx = xmlParserService.convertXMLContentToGPX(gpxFile);
-		if (gpx == null) {
+		GPX gpx;
+		try {
+			gpx = xmlParserService.convertXMLContentToGPX(gpxFile);
+		} catch (Exception e) {
+			LOGGER.error("Error parsing gpx file", e);
 			return new ResponseEntity<>(new UploadTrackResponse(null, "Cannot read file content"), HttpStatus.BAD_REQUEST);
 		}
 		GPX insertedGPX = gpxService.add(gpx);
@@ -56,8 +64,18 @@ public class GPXController {
 	
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<TrackDetailResponse> getTrackDetail(@PathVariable(name = "id") String id) {
-		GPX gpx = gpxService.findById(id);
-		return new ResponseEntity<>(new TrackDetailResponse(gpx), HttpStatus.OK);
+		try {
+			GPX gpx = gpxService.findById(id);
+			return new ResponseEntity<>(new TrackDetailResponse(gpx), HttpStatus.OK);
+		} catch (Exception e) {
+			LOGGER.error("Error getting track detail id {}", id, e);
+			return new ResponseEntity<>(new TrackDetailResponse("Error while getting track detail"), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<TrackCountResponse> getCount() {
+		return new ResponseEntity<>(new TrackCountResponse(gpxService.count()), HttpStatus.OK);
 	}
 
 }

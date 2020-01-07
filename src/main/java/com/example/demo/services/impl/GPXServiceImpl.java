@@ -55,5 +55,10 @@ public class GPXServiceImpl implements GPXService {
 	public GPX findById(String id) {
 		return gpxRepository.findOne(id);
 	}
+	
+	@Override
+	public Long count() {
+		return gpxRepository.count();
+	}
 
 }

@@ -14,5 +14,7 @@ public interface GPXService {
 	public List<GPXOverviewResponse> findBasicInfoWithPaging(Pageable pageable);
 	
 	public GPX findById(String id);
+	
+	public Long count();
 
 }
