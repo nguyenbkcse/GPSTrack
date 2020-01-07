@@ -4,14 +4,14 @@ public class BaseResponse<T> {
 
     private T data;
 
-    private String message;
+    private String errorMessage;
 
     protected BaseResponse() {
         
     }
     
-    protected BaseResponse(final String message) {
-        this.message = message;
+    protected BaseResponse(final String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     protected BaseResponse(final T data) {
@@ -22,16 +22,16 @@ public class BaseResponse<T> {
         return this.data;
     }
 
-    public String getMessage() {
-        return this.message;
+    public String getErrorMessage() {
+        return this.errorMessage;
     }
 
     public void setData(final T data) {
         this.data = data;
     }
 
-    public void setMessage(final String message) {
-        this.message = message;
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

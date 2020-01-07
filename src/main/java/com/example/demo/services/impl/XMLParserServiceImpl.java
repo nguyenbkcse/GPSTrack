@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.example.demo.domain.GPS;
+import com.example.demo.domain.GPX;
 import com.example.demo.domain.TrackPoint;
 import com.example.demo.domain.TrackSegment;
 import com.example.demo.domain.WayPoint;
@@ -31,6 +31,8 @@ public class XMLParserServiceImpl implements XMLParserService {
 	private static final String DESCRIPTION_TAG = "desc";
 	private static final String TIME_TAG = "time";
 	private static final String AUTHOR_TAG = "author";
+	private static final String LINK_TAG = "link";
+	private static final String TEXT_TAG = "text";
 	private static final String WAYPOINT_TAG = "wpt";
 	private static final String SYM_TAG = "sym";
 	private static final String TRACK_TAG = "trk";
@@ -39,59 +41,64 @@ public class XMLParserServiceImpl implements XMLParserService {
 	private static final String ELEVATION_TAG = "ele";
 	private static final String LAT_ATTRIBUTE = "lat";
 	private static final String LON_ATTRIBUTE = "lon";
+	private static final String HREF_ATTRIBUTE = "href";
 	
 	@Autowired
 	DocumentBuilder documentBuilder;
 	
 	@Override
-	public GPS convertXMLContentToGPS(MultipartFile gpsFile) {
-		GPS gps;
+	public GPX convertXMLContentToGPX(MultipartFile gpxFile) {
+		GPX gpx;
 		try {
-			gps = new GPS();
-			Document doc = documentBuilder.parse(gpsFile.getInputStream());
+			gpx = new GPX();
+			Document doc = documentBuilder.parse(gpxFile.getInputStream());
 			doc.getDocumentElement().normalize();
-			getInfoFromMetaData(doc, gps);
-			getInfoFromWayPoints(doc, gps);
-			getInfoFromTrackPoints(doc, gps);
+			getInfoFromMetaData(doc, gpx);
+			getInfoFromWayPoints(doc, gpx);
+			getInfoFromTrackPoints(doc, gpx);
 		} catch (Exception e) {
-			gps = null;
+			gpx = null;
 			LOGGER.error("Error parsing xml file", e);
 		}
-        return gps;
+        return gpx;
 	}
 	
-	private void getInfoFromMetaData(Document doc, GPS gps) {
-		Element element = (Element)doc.getElementsByTagName(META_DATA_TAG).item(0);
-		gps.setGpsName(element.getElementsByTagName(NAME_TAG).item(0).getTextContent());
-		gps.setDescription(element.getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
-		gps.setAuthor(element.getElementsByTagName(AUTHOR_TAG).item(0).getTextContent());
-		gps.setTime(getDateFromString(element.getElementsByTagName(TIME_TAG).item(0).getTextContent()));
+	private void getInfoFromMetaData(Document doc, GPX gpx) {
+		Element metaDataNode = (Element)doc.getElementsByTagName(META_DATA_TAG).item(0);
+		gpx.setGpxName(metaDataNode.getElementsByTagName(NAME_TAG).item(0).getTextContent());
+		gpx.setDescription(metaDataNode.getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
+		gpx.setAuthor(metaDataNode.getElementsByTagName(AUTHOR_TAG).item(0).getTextContent());
+		gpx.setTime(getDateFromString(metaDataNode.getElementsByTagName(TIME_TAG).item(0).getTextContent()));
+		Element linkNode = (Element) metaDataNode.getElementsByTagName(LINK_TAG).item(0);
+		Element textNode = (Element) linkNode.getElementsByTagName(TEXT_TAG).item(0);
+		gpx.setLinkHref(linkNode.getAttribute(HREF_ATTRIBUTE));
+		gpx.setLinkText(textNode.getTextContent());
 	}
 	
-	private void getInfoFromWayPoints(Document doc, GPS gps) {
+	private void getInfoFromWayPoints(Document doc, GPX gpx) {
 		NodeList nodeList = doc.getElementsByTagName(WAYPOINT_TAG);
 		Set<WayPoint> waypoints = new LinkedHashSet<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element)nodeList.item(i);
 			WayPoint waypoint = new WayPoint();
-			waypoint.setGps(gps);
+			waypoint.setGpx(gpx);
 	        waypoint.setName(element.getElementsByTagName(NAME_TAG).item(0).getTextContent());
 	        waypoint.setSym(element.getElementsByTagName(SYM_TAG).item(0).getTextContent());
 	        waypoint.setLat(Double.parseDouble(element.getAttribute(LAT_ATTRIBUTE)));
 	        waypoint.setLon(Double.parseDouble(element.getAttribute(LON_ATTRIBUTE)));
 	        waypoints.add(waypoint);
 		}
-		gps.setWaypoints(waypoints);
+		gpx.setWaypoints(waypoints);
 	}
 	
-	private void getInfoFromTrackPoints(Document doc, GPS gps) {
+	private void getInfoFromTrackPoints(Document doc, GPX gpx) {
 		Element trackNode = (Element)doc.getElementsByTagName(TRACK_TAG).item(0);
 		NodeList trackSegmentNodes = trackNode.getElementsByTagName(TRACK_SEGMENT_TAG);
 		Set<TrackSegment> trackSegments = new LinkedHashSet<>();
 		for (int i = 0; i < trackSegmentNodes.getLength(); i++) {
 			Element trackSegmentNode = (Element) trackSegmentNodes.item(i);
 			TrackSegment trackSegment = new TrackSegment();
-			trackSegment.setGps(gps);
+			trackSegment.setGpx(gpx);
 			NodeList trackPointNodes = trackSegmentNode.getElementsByTagName(TRACK_POINT_TAG);
 			Set<TrackPoint> trackPoints = new LinkedHashSet<>();
 			for (int j = 0; j < trackPointNodes.getLength(); j++) {
@@ -107,7 +114,7 @@ public class XMLParserServiceImpl implements XMLParserService {
 			trackSegment.setTrackPoints(trackPoints);
 			trackSegments.add(trackSegment);
 		}
-		gps.setTrackSegments(trackSegments);
+		gpx.setTrackSegments(trackSegments);
 	}
 	
 	private Date getDateFromString(String dateString) {

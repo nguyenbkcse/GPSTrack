@@ -20,17 +20,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class GPS {
+public class GPX {
 	
 	@Id
     @GeneratedValue(generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "gps_id")
+    @Column(name = "gpx_id")
 	@JsonIgnore
 	private String id;
 	
-	@Column(name = "gps_name")
-	private String gpsName;
+	@Column(name = "gpx_name")
+	private String gpxName;
 	
 	@Column(columnDefinition="TEXT")
 	private String description;
@@ -39,15 +39,21 @@ public class GPS {
 	private String author;
 	
 	@Column
+	private String linkHref;
+	
+	@Column
+	private String linkText;
+	
+	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ")
 	private Date time;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gpx", fetch = FetchType.EAGER)
 	@OrderBy("id")
 	private Set<WayPoint> waypoints;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gps", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gpx", fetch = FetchType.EAGER)
 	@OrderBy("id")
 	private Set<TrackSegment> trackSegments;
 
@@ -59,12 +65,12 @@ public class GPS {
 		this.id = id;
 	}
 
-	public String getGpsName() {
-		return gpsName;
+	public String getGpxName() {
+		return gpxName;
 	}
 
-	public void setGpsName(String gpsName) {
-		this.gpsName = gpsName;
+	public void setGpxName(String gpxName) {
+		this.gpxName = gpxName;
 	}
 
 	public String getDescription() {
@@ -81,6 +87,22 @@ public class GPS {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String getLinkHref() {
+		return linkHref;
+	}
+
+	public void setLinkHref(String linkHref) {
+		this.linkHref = linkHref;
+	}
+
+	public String getLinkText() {
+		return linkText;
+	}
+
+	public void setLinkText(String linkText) {
+		this.linkText = linkText;
 	}
 
 	public Date getTime() {

@@ -15,49 +15,49 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.domain.GPS;
-import com.example.demo.response.GPSResponse;
+import com.example.demo.domain.GPX;
+import com.example.demo.response.GPXOverviewResponse;
 import com.example.demo.response.LatestTracksResponse;
 import com.example.demo.response.TrackDetailResponse;
 import com.example.demo.response.UploadTrackResponse;
-import com.example.demo.services.GPSService;
+import com.example.demo.services.GPXService;
 import com.example.demo.services.XMLParserService;
 
 @RestController
 @RequestMapping
-public class GPSController {
+public class GPXController {
 	
 	@Autowired
-	GPSService gpsService;
+	GPXService gpxService;
 	
 	@Autowired
 	XMLParserService xmlParserService;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<UploadTrackResponse> uploadGPSFile(@RequestParam MultipartFile gpsFile) {
-		GPS gps = xmlParserService.convertXMLContentToGPS(gpsFile);
-		if (gps == null) {
+	public ResponseEntity<UploadTrackResponse> uploadGPXFile(@RequestParam MultipartFile gpxFile) {
+		GPX gpx = xmlParserService.convertXMLContentToGPX(gpxFile);
+		if (gpx == null) {
 			return new ResponseEntity<>(new UploadTrackResponse(null, "Cannot read file content"), HttpStatus.BAD_REQUEST);
 		}
-		GPS insertedGPS = gpsService.add(gps);
-		if (insertedGPS == null) {
+		GPX insertedGPX = gpxService.add(gpx);
+		if (insertedGPX == null) {
 			return new ResponseEntity<>(new UploadTrackResponse(null, "Cannot upload file into system"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(new UploadTrackResponse(insertedGPS.getId(), null), HttpStatus.OK);
+		return new ResponseEntity<>(new UploadTrackResponse(insertedGPX.getId(), null), HttpStatus.OK);
 	}
 	
 	@GetMapping("/latest")
 	public ResponseEntity<LatestTracksResponse> getLatestTracks(@RequestParam(defaultValue = "0") int offset, @RequestParam (defaultValue = "20") int limit) {
 		Sort sort = new Sort(Sort.Direction.DESC, "time");
 		PageRequest pageRequest = new PageRequest(offset, limit, sort);
-		List<GPSResponse> result = gpsService.findBasicInfoWithPaging(pageRequest);
+		List<GPXOverviewResponse> result = gpxService.findBasicInfoWithPaging(pageRequest);
 		return new ResponseEntity<>(new LatestTracksResponse(result), HttpStatus.OK);
 	}
 	
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<TrackDetailResponse> getTrackDetail(@PathVariable(name = "id") String id) {
-		GPS gps = gpsService.findById(id);
-		return new ResponseEntity<>(new TrackDetailResponse(gps), HttpStatus.OK);
+		GPX gpx = gpxService.findById(id);
+		return new ResponseEntity<>(new TrackDetailResponse(gpx), HttpStatus.OK);
 	}
 
 }

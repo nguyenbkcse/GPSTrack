@@ -19,8 +19,7 @@ public class DemoApplication {
 	@Bean
 	DocumentBuilder documentBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		return builder;
+		return factory.newDocumentBuilder();
 	}
 	
 }

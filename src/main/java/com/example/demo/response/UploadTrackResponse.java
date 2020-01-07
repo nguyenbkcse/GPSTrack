@@ -2,9 +2,9 @@ package com.example.demo.response;
 
 public class UploadTrackResponse extends BaseResponse<String> {
 	
-	public UploadTrackResponse(String data, String message) {
+	public UploadTrackResponse(String data, String errorMessage) {
 		setData(data);
-		setMessage(message);
+		setErrorMessage(errorMessage);
 	}
 
 }

@@ -1,15 +1,15 @@
 package com.example.demo.response;
 
-import com.example.demo.domain.GPS;
+import com.example.demo.domain.GPX;
 
-public class TrackDetailResponse extends BaseResponse<GPS> {
+public class TrackDetailResponse extends BaseResponse<GPX> {
 	
-	public TrackDetailResponse(GPS data) {
+	public TrackDetailResponse(GPX data) {
 		super(data);
 	}
 	
-	public TrackDetailResponse(String message) {
-		super(message);
+	public TrackDetailResponse(String errorMessage) {
+		super(errorMessage);
 	}
 
 }

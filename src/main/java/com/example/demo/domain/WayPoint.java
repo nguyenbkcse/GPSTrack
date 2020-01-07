@@ -20,9 +20,9 @@ public class WayPoint {
 	private long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="gps_id", nullable=false)
+    @JoinColumn(name="gpx_id", nullable=false)
 	@JsonIgnore
-    private GPS gps;
+    private GPX gpx;
 	
 	@Column
 	private double lat;
@@ -44,12 +44,12 @@ public class WayPoint {
 		this.id = id;
 	}
 
-	public GPS getGps() {
-		return gps;
+	public GPX getGpx() {
+		return gpx;
 	}
 
-	public void setGps(GPS gps) {
-		this.gps = gps;
+	public void setGpx(GPX gpx) {
+		this.gpx = gpx;
 	}
 
 	public double getLat() {
