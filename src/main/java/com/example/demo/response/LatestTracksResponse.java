@@ -11,5 +11,9 @@ public class LatestTracksResponse extends BaseResponse<List<GPXOverviewResponse>
 	public LatestTracksResponse(String errorMessage) {
 		super(errorMessage);
 	}
+	
+	public LatestTracksResponse() {
+		
+	}
 
 }

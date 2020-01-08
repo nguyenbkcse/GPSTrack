@@ -6,5 +6,9 @@ public class UploadTrackResponse extends BaseResponse<String> {
 		setData(data);
 		setErrorMessage(errorMessage);
 	}
+	
+	public UploadTrackResponse() {
+		
+	}
 
 }

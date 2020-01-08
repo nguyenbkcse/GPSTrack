@@ -10,4 +10,7 @@ public class TrackCountResponse extends BaseResponse<Long> {
 		super(errorMessage);
 	}
 	
+	public TrackCountResponse() {
+		
+	}
 }

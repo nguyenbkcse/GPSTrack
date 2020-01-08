@@ -1,16 +1,14 @@
-package com.example.demo;
+package com.example.demo.test.repository;
 
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.demo.constants.Constant;
@@ -29,8 +27,7 @@ public class GPXRepositoryTest {
 	GPX gpx2 = GPXUtils.buildGPX(Constant.gpx2Name, Constant.gpx2Description, Constant.gpx2Author, Constant.gpx2LinkText, Constant.gpx2LinkHref, Constant.gpx2Time);
 	GPX gpx3 = GPXUtils.buildGPX(Constant.gpx3Name, Constant.gpx3Description, Constant.gpx3Author, Constant.gpx3LinkText, Constant.gpx3LinkHref, Constant.gpx3Time);
 	
-	@Before
-	public void init() {
+	public void createGpxs() {
 		gpxRepository.save(gpx1);
 		gpxRepository.save(gpx2);
 		gpxRepository.save(gpx3);
@@ -38,7 +35,8 @@ public class GPXRepositoryTest {
 	
 	@Test
 	public void testFindAllWithTimeOrderDesc() {
-		PageRequest pageRequest = buildPageRequest(0, 3);
+		createGpxs();
+		PageRequest pageRequest = GPXUtils.buildPageRequest(0, 3);
 		List<Object[]> records = gpxRepository.findAllWithBasicInfo(pageRequest);
 		Assert.assertEquals(gpx2.getGpxName(), (String)records.get(0)[Constant.GPX_NAME_INDEX]);
 		Assert.assertEquals(gpx3.getGpxName(), (String)records.get(1)[Constant.GPX_NAME_INDEX]);
@@ -50,7 +48,8 @@ public class GPXRepositoryTest {
 	
 	@Test
 	public void testFindFirst2Records() {
-		PageRequest pageRequest = buildPageRequest(0, 2);
+		createGpxs();
+		PageRequest pageRequest = GPXUtils.buildPageRequest(0, 2);
 		List<Object[]> records = gpxRepository.findAllWithBasicInfo(pageRequest);
 		Assert.assertEquals(gpx2.getGpxName(), (String)records.get(0)[Constant.GPX_NAME_INDEX]);
 		Assert.assertEquals(gpx3.getGpxName(), (String)records.get(1)[Constant.GPX_NAME_INDEX]);
@@ -60,10 +59,18 @@ public class GPXRepositoryTest {
 	
 	@Test
 	public void testFindLastRecord() {
-		PageRequest pageRequest = buildPageRequest(1, 2);
+		createGpxs();
+		PageRequest pageRequest = GPXUtils.buildPageRequest(1, 2);
 		List<Object[]> records = gpxRepository.findAllWithBasicInfo(pageRequest);
 		Assert.assertEquals(gpx1.getGpxName(), (String)records.get(0)[Constant.GPX_NAME_INDEX]);
 		assertEquals(records.get(0), gpx1);
+	}
+	
+	@Test
+	public void testFindEmptyResult() {
+		PageRequest pageRequest = GPXUtils.buildPageRequest(0, 3);
+		List<Object[]> records = gpxRepository.findAllWithBasicInfo(pageRequest);
+		Assert.assertTrue(records.isEmpty());
 	}
 	
 	private void assertEquals(Object[] record, GPX gpx) {
@@ -76,11 +83,6 @@ public class GPXRepositoryTest {
 		Assert.assertEquals(gpx.getTime(), (Date)record[Constant.TIME_INDEX]);
 		Assert.assertNull(gpx.getTrackSegments());
 		Assert.assertNull(gpx.getWaypoints());
-	}
-	
-	private PageRequest buildPageRequest(int offset, int limit) {
-		Sort sort = new Sort(Sort.Direction.DESC, "time");
-		return new PageRequest(offset, limit, sort);
 	}
 	
 }

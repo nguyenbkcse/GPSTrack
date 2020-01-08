@@ -70,6 +70,10 @@ public class GPXOverviewResponse {
 	public void setTime(Date time) {
 		this.time = time;
 	}
+	
+	public GPXOverviewResponse() {
+		
+	}
 
 	private GPXOverviewResponse(GPXOverviewResponseBuilder builder) {
 		this.id = builder.id;

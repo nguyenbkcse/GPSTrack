@@ -11,5 +11,9 @@ public class TrackDetailResponse extends BaseResponse<GPX> {
 	public TrackDetailResponse(String errorMessage) {
 		super(errorMessage);
 	}
+	
+	public TrackDetailResponse() {
+		
+	}
 
 }
